@@ -1,0 +1,80 @@
+﻿<label id="deviceId"></label>
+<div class="jumbotron" style="height:150px;padding-top:20px;">
+    <h1>Device Emulator</h1>
+</div>
+<div class="row" style="min-height:500px;">
+    <div class="col-md-6" style="min-height:500px;padding-left:45px">
+        <h2>Received Commands</h2>
+        <div class="container">
+            <ul id="commandLst"></ul>
+        </div>
+    </div>
+    <div class="col-md-6" style="min-height:500px;border-left: 0.5px solid lightgrey;padding-left:90px; margin-left:-45px;">
+        <div class="row" style="margin-left:0px;">
+            <h2 style="padding-bottom:10px;">Push messages</h2>
+            <input type="button" id="btnSend" value="Start Pushing to Hub" style="width:180px;" />
+            <input type="button" id="btnStop" value="Stop Pushing" style="margin-left:10px;width:180px;" />
+        </div>
+        <div class="container">
+            <ul id="pushMessage" style="padding-left: 0; padding-top:10px;"></ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var hub = $.connection.signalRHub;
+
+       hub.client.messageUpdate = function (message) {
+            var msg = JSON.parse(message);
+            $('#commandLst').append('<li>' + msg.Message  + " - " + msg.MessageId + '</li>');
+
+            var response = msg.Message +" - " + msg.MessageId +  " - Response";
+
+            $.ajax({
+                        type: "POST",
+                        url: "api/Response?messageId=" + msg.MessageId + "&respMessage=" + response,
+                        success: function (result) {
+                        }
+                    })
+
+            console.log(message);
+        }
+
+        $.connection.hub.start().done(function () {
+            console.log("listening for messages");
+            $('#deviceId').text($.connection.hub.id);
+
+            $.ajax({
+                type: "POST",
+                url: "api/QueueStart?deviceID=" + $('#deviceId').text(),
+                success: function (result) {
+                }
+            })
+        })
+       
+        var timer;
+        var index = 0;
+
+        $('#btnSend').click(function (e) {
+            e.preventDefault();
+
+            timer = setInterval(function () {
+                var e = (++index) + "Device:" + $('#deviceId').text() +  "; Point: " + (Math.floor(Math.random() * 100000) +1) + "; Value: " + (Math.random() * Math.random() * 100 + 1);
+
+                $.ajax({
+                    type: "POST",
+                    url: "api/DataPush?dataMessage=" + e,
+                    success: function (result) {
+                        $('#pushMessage').append('<li>' + e + '</li>');
+                    }
+                })
+            }, 1000);
+        });
+
+        $('#btnStop').click(function (e) {
+            clearInterval(timer);
+        });
+    });
+</script>

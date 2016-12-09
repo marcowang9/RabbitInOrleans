@@ -1,0 +1,83 @@
+﻿<div class="jumbotron" style="height:150px;padding-top:20px;">
+    <h1>Message Hub</h1>
+</div>
+<div class="row" style="padding-left:30px; padding-right:30px;">
+    <div class="col-md-12">
+        <h2 style="margin-bottom:10px">Connected Devices</h2>
+        <ul id="devices"  style="border: 1px solid lightgray;"></ul>
+    </div>
+</div>
+<div class="row" style="min-height:500px;padding-left:30px">
+    <div class="col-md-4" style="min-height:500px;">
+        <h2 style="margin-bottom:10px">Command Request</h2>
+        <div class="container">
+            <div class="row" style="margin-left:-15px;">
+                <div class="row" style="margin-top:10px;">
+                    <label for="deviceid"  class="col-md-3">DeviceID</label>
+                    <input name="DeviceID" class="col-md-8" type="text" id="deviceId" style="margin-left: -15px;" />
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <label for="message" class="col-md-3">Message</label>
+                    <input   class="col-md-8" type="text" id="message" style="margin-left: -15px;" />
+                </div>
+                <input class="col-md-4" type="button" id="sendmessage" value="Command >>" style="margin-top:10px; float:right;margin-right:30px;"/>
+            </div>
+            <ul id="request" style="padding-left: 0; margin-left: 0; padding-top:10px;"></ul>
+        </div>
+    </div>
+    <div class="col-md-4" style="border-right:1px; min-height:500px;padding-left:30px">
+        <h2>Command Response</h2>
+        <div class="container" style="padding-top:26px;">
+            <ul id="response" style="padding-left: 0; margin-left: 0; padding-top:10px;"></ul>
+        </div>
+    </div>
+    <div class="col-md-4" style="min-height:500px; border-left: 0.5px solid lightgrey;padding-left:70px; margin-left:-40px;">
+        <h2>Received Message</h2>
+        <div class="container">
+            <ul id="pushMessage" style="padding-left: 0; margin-left: 0; padding-top:10px;margin-right: -50px;"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var hub = $.connection.signalRHub;
+
+        hub.client.messageUpdate = function (message) {
+            $('#pushMessage').append('<li>' + JSON.parse(message).Message + '</li>');
+            console.log(message);
+        }
+
+        hub.client.deviceUpdate = function (deviceId) {
+            $('#devices').append('<li>' + deviceId + '</li>');
+            console.log(message);
+        }
+
+        $.connection.hub.start().done(function () {
+            console.log("listening for messages");
+        })
+
+        $('#sendmessage').click(function (e) {
+            e.preventDefault();
+            
+            var msg = $('#message').val();
+            
+            if (!msg)
+                msg = "Hello World!"
+
+            var deviceId = $('#deviceId').val();
+
+            $('#request').append('<li>' + msg + '</li>');
+
+            $.ajax({
+                type: "GET",
+                url: "api/command",
+                data: { messageId: 0, reqMessage: msg, device: deviceId },
+                success: function (result) {
+                    var e = JSON.parse(result);
+                    $('#response').append('<li>' + e.Message + '</li>');
+                }
+            })
+        })
+    });
+ </script>

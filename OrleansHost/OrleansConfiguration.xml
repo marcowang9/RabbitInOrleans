@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<OrleansConfiguration xmlns="urn:orleans">
+  <Globals>
+    <SeedNode Address="localhost" Port="11111" />
+    <BootstrapProviders>
+      <Provider Type="OrleansHost.OrleansHostBoostrapProvider" Name="OrleansHostBoostrapProvider" InstanceCount="1"/>
+    </BootstrapProviders>
+    <StorageProviders>
+      <Provider Type="Orleans.Storage.MemoryStorage" Name="MemStore" />
+    </StorageProviders>
+  </Globals>
+  <Defaults>
+    <Networking Address="localhost" Port="11111" />
+    <ProxyingGateway Address="localhost" Port="30001" />
+    <Tracing DefaultTraceLevel="Info" TraceToConsole="true" TraceToFile="{0}-{1}.log" WriteMessagingTraces="true">
+      <TraceLevelOverride LogPrefix="Application" TraceLevel="Info" />
+      <TraceLevelOverride LogPrefix="Runtime" TraceLevel="Warning" />
+    </Tracing>
+  </Defaults>
+</OrleansConfiguration>
