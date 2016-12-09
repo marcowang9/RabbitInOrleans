@@ -4,8 +4,6 @@ namespace Common
 {
     static public class ConnectionConst
     {
-        //public const string amqpConnection =  "amqp://admin:admin@123.206.219.181:5672/";
-
         public const string amqpConnection = "amqp://@localhost/";
 
         public const string exchange = "";
