@@ -11,6 +11,9 @@ floppy.img
 *.secrets.ps1
 **/csx
 **/rcf
+**/ecf
+diagnostics.wadcfgx
+*.azurePubxml
 Upgradelog*.htm
 *web.config.backup.1*
 *App_Data*
@@ -21,16 +24,11 @@ TestResult.xml
 *_h.h
 *_s.c
 *_c.c
-extendedversion.res
 version.*
-NotificationInterop.h
 *.tlh
 *.tli
-src/CloudConnector/Production/EBI/CloudConnectorDb/hns/historybackfillqueue.tst.exe
 *.orig
-src/CloudPlatform/Production/Global/SystemRegistration/Cloud.Platform.Global.SytemRegistration.Web/app.log
 *.log
-CommonAssemblyInfo.cs
 *.DotSettings
 build/gitversion.json
 build/output.json
@@ -42,5 +40,6 @@ applicationhost.config
 **/acscp.bulldog.build.powershell*/*
 *.html
 *.playlist
+*.cscfg
 
-src/CloudPlatform/Production/WebApiClient/Cloud.Platform.WebApiClient.Rest/SwaggerJson/*.json.old
+
